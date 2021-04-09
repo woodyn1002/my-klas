@@ -46,6 +46,13 @@ class LectureRegistrationService(
             }
         }
 
+        if (lecture.numAvailable <= 0) {
+            throw errorHelper.badRequest(
+                "Student couldn't register the lecture: no available seats"
+            )
+        }
+        lecture.numAvailable--
+
         val registration = LectureRegistration(
             student = student,
             lecture = lecture
