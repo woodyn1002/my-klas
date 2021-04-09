@@ -5,8 +5,7 @@ import io.kotest.inspectors.forAny
 import io.kotest.matchers.shouldBe
 import me.woodyn.myklas.helper.aLecture
 import me.woodyn.myklas.helper.aLectureCreateDto
-import me.woodyn.myklas.helper.aStudent
-import me.woodyn.myklas.helper.aStudentCreateDto
+import me.woodyn.myklas.helper.aScheduleCreateDto
 import me.woodyn.myklas.persistence.repository.LectureRepository
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -59,7 +58,10 @@ class LectureIntegrationTests(
 
     @Test
     fun `Post a lecture`() {
-        val dto = aLectureCreateDto(lectureNumber = "0000-1-1077-01")
+        val dto = aLectureCreateDto(
+            lectureNumber = "0000-1-1077-01",
+            schedules = listOf(aScheduleCreateDto())
+        )
 
         mockMvc.post("/lectures") {
             accept = MediaType.APPLICATION_JSON
@@ -68,6 +70,7 @@ class LectureIntegrationTests(
         }.andExpect {
             status { isOk() }
             jsonPath("$.id") { exists() }
+            jsonPath("$.schedules", Matchers.hasSize<Collection<*>>(1))
         }
 
         lectureRepository.findAll().forAny {

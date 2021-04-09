@@ -3,6 +3,7 @@ package me.woodyn.myklas.service
 import me.woodyn.myklas.dto.LectureDto
 import me.woodyn.myklas.dto.mapper.LectureDtoMapper
 import me.woodyn.myklas.persistence.model.Lecture
+import me.woodyn.myklas.persistence.model.Schedule
 import me.woodyn.myklas.persistence.repository.LectureRepository
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -27,6 +28,16 @@ class LectureService(
             capacity = dto.capacity,
             numAvailable = dto.capacity
         )
+        for (scheduleDto in dto.schedules) {
+            lecture.schedules.add(
+                Schedule(
+                    lecture = lecture,
+                    dayOfWeek = scheduleDto.dayOfWeek,
+                    beginTime = scheduleDto.beginTime,
+                    endTime = scheduleDto.endTime
+                )
+            )
+        }
         lectureRepository.save(lecture)
 
         return dtoMapper.mapToDto(lecture)
