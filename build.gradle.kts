@@ -30,6 +30,9 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     runtimeOnly("mysql:mysql-connector-java")
 
+    // Monitoring
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // Test
     testImplementation("io.kotest:kotest-assertions-core:4.4.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
