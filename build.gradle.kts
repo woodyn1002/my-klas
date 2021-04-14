@@ -32,6 +32,7 @@ dependencies {
 
     // Monitoring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.6.5")
 
     // Test
     testImplementation("io.kotest:kotest-assertions-core:4.4.3")
