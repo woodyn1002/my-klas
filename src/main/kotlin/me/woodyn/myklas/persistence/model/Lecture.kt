@@ -26,4 +26,7 @@ class Lecture(
 
     @OneToMany(mappedBy = "lecture", cascade = [CascadeType.REMOVE])
     val registrations: MutableSet<LectureRegistration> = mutableSetOf()
+
+    @Version
+    var version: Long? = null
 }

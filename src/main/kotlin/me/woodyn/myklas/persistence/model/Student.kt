@@ -12,4 +12,7 @@ class Student(
 ) {
     @OneToMany(mappedBy = "student", cascade = [CascadeType.REMOVE])
     val lectureRegistrations: MutableSet<LectureRegistration> = mutableSetOf()
+
+    @Version
+    var version: Long? = null
 }
