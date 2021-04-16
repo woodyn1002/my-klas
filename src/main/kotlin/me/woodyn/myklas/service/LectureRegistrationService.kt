@@ -10,6 +10,7 @@ import me.woodyn.myklas.service.register.RegisterConstraint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -25,7 +26,7 @@ class LectureRegistrationService(
 ) {
     private val errorHelper: ServiceErrorHelper = ServiceErrorHelper()
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     fun register(
         studentId: Long,
         dto: LectureRegistrationDto.Register
