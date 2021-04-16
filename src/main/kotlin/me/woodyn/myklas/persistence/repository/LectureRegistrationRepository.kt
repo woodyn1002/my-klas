@@ -9,15 +9,19 @@ import org.springframework.stereotype.Repository
 @Repository
 interface LectureRegistrationRepository : JpaRepository<LectureRegistration, Long> {
 
-    @Query("select r from LectureRegistration r " +
-            "where r.student = ?1 and r.lecture.term = ?2")
+    @Query(
+        "select reg from LectureRegistration reg inner join reg.lecture lec " +
+                "where reg.student = ?1 and lec.term = ?2"
+    )
     fun findRegistrationsBelongToTerm(
         student: Student,
         lectureTerm: String
     ): Set<LectureRegistration>
 
-    @Query("select r from LectureRegistration r " +
-            "where r.student = ?1 and r.lecture.subject = ?2 and r.lecture.term <> ?3")
+    @Query(
+        "select reg from LectureRegistration reg inner join reg.lecture lec " +
+                "where reg.student = ?1 and lec.subject = ?2 and lec.term <> ?3"
+    )
     fun findOldRegistrationsBySubject(
         student: Student,
         lectureSubject: String,
