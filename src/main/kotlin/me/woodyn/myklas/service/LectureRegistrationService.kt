@@ -30,10 +30,10 @@ class LectureRegistrationService(
         studentId: Long,
         dto: LectureRegistrationDto.Register
     ): LectureRegistrationDto.Result {
-        val student = studentRepository.findById(studentId).orElseThrow {
+        val student = studentRepository.findByIdForUpdate(studentId).orElseThrow {
             errorHelper.notFound("Student $studentId")
         }
-        val lecture = lectureRepository.findById(dto.lectureId).orElseThrow {
+        val lecture = lectureRepository.findByIdForUpdate(dto.lectureId).orElseThrow {
             errorHelper.notFound("Lecture ${dto.lectureId}")
         }
 
