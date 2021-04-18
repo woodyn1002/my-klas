@@ -1,3 +1,7 @@
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,10 +13,32 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    show-sql: true
+    properties:
+      hibernate:
+        generate_statistics: true
 logging:
+  file:
+    path: /var/log/my-klas
   level:
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.SQL: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+    tags:
+      application: "my-klas"
+    export:
+      prometheus:
+        pushgateway:
+          enabled: true
+          push-rate: 1s
 domain:
   constraints:
     max-credit: 19
