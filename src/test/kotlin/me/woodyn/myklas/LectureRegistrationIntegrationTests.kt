@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import java.time.DayOfWeek
 import java.time.LocalTime
+import javax.persistence.EntityManager
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -39,7 +40,10 @@ class LectureRegistrationIntegrationTests(
     private val lectureRegistrationRepository: LectureRegistrationRepository,
 
     @Autowired
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+
+    @Autowired
+    private val em: EntityManager
 ) {
 
     @Test
@@ -130,6 +134,7 @@ class LectureRegistrationIntegrationTests(
         lectureRegistrationRepository.save(
             aLectureRegistration(id = null, student = student, lecture = oldLecture)
         )
+        em.clear()
 
         val dto = aLectureRegistrationRegisterDto(lectureId = newLecture.id!!)
 
