@@ -11,6 +11,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,10 +21,14 @@ class LectureRegistrationService(
     private val registrationRepository: LectureRegistrationRepository,
     private val studentRepository: StudentRepository,
     private val lectureRepository: LectureRepository,
+    private val fullLectureArchive: FullLectureArchive,
 
     @Autowired(required = false)
     @Qualifier("basic")
-    private val registerConstraints: List<RegisterConstraint> = emptyList()
+    private val registerConstraints: List<RegisterConstraint> = emptyList(),
+
+    @Value("\${domain.register.capacity-cache-lifetime}")
+    private val capacityCacheLifetime: Long
 ) {
     private val errorHelper: ServiceErrorHelper = ServiceErrorHelper()
 
@@ -34,6 +39,13 @@ class LectureRegistrationService(
         studentId: Long,
         dto: LectureRegistrationDto.Register
     ): LectureRegistrationDto.Result {
+        if (fullLectureArchive.isFull(dto.lectureId)) {
+            logger.debug("Lecture ${dto.lectureId} is full (cached capacity found)")
+            throw errorHelper.badRequest(
+                "Student couldn't register the lecture: no available seats"
+            )
+        }
+
         val student = studentRepository.findByIdForUpdate(studentId).orElseThrow {
             errorHelper.notFound("Student $studentId")
         }
@@ -56,8 +68,12 @@ class LectureRegistrationService(
                 "Student couldn't register the lecture: no available seats"
             )
         }
+
         lecture.numAvailable--
         logger.debug("The remaining seats of the lecture ${lecture.id} is ${lecture.numAvailable}")
+        if (lecture.numAvailable <= 0) {
+            fullLectureArchive.setFullFor(lecture.id!!, capacityCacheLifetime)
+        }
 
         val registration = LectureRegistration(
             student = student,

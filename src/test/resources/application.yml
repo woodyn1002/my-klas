@@ -21,6 +21,8 @@ logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 domain:
+  register:
+    capacity-cache-lifetime: 1000
   constraints:
     max-credit: 19
     max-grade-for-retaking: C_PLUS

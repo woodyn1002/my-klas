@@ -45,6 +45,8 @@ management:
           enabled: true
           push-rate: 1s
 domain:
+  register:
+    capacity-cache-lifetime: 1000
   constraints:
     max-credit: 19
     max-grade-for-retaking: C_PLUS
