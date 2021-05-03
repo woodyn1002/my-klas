@@ -20,4 +20,10 @@ class AdminService(
         lectureRepository.deleteAll()
     }
 
+    @Transactional
+    fun clearTerm(term: String) {
+        registrationRepository.deleteAllByLectureTerm(term)
+        lectureRepository.deleteAllByTerm(term)
+    }
+
 }
