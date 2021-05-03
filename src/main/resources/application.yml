@@ -20,6 +20,7 @@ logging:
   file:
     path: /var/log/my-klas
   level:
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: fatal
     org.hibernate.SQL: debug
 management:
   endpoints:
