@@ -23,6 +23,9 @@ class AdminService(
     @Transactional
     fun clearTerm(term: String) {
         registrationRepository.deleteAllByLectureTerm(term)
+        for (lecture in lectureRepository.findAllByTerm(term)) {
+            lecture.numAvailable = lecture.capacity
+        }
     }
 
 }

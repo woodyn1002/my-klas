@@ -6,4 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface LectureRepository : JpaRepository<Lecture, Long>, JpaSpecificationExecutor<Lecture>
+interface LectureRepository : JpaRepository<Lecture, Long>, JpaSpecificationExecutor<Lecture> {
+
+    fun findAllByTerm(term: String): List<Lecture>
+
+}
