@@ -1,5 +1,7 @@
 server:
   tomcat:
+    threads:
+      max: 100
     mbeanregistry:
       enabled: true
 spring:
@@ -8,6 +10,8 @@ spring:
     url: "jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul"
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 75
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: true
