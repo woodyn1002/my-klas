@@ -7,6 +7,8 @@ import me.woodyn.myklas.persistence.repository.LectureRegistrationRepository
 import me.woodyn.myklas.persistence.repository.LectureRepository
 import me.woodyn.myklas.persistence.repository.StudentRepository
 import me.woodyn.myklas.service.register.RegisterConstraint
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -24,6 +26,8 @@ class LectureRegistrationService(
     private val registerConstraints: List<RegisterConstraint> = emptyList()
 ) {
     private val errorHelper: ServiceErrorHelper = ServiceErrorHelper()
+
+    val logger: Logger get() = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
     fun register(
@@ -46,12 +50,14 @@ class LectureRegistrationService(
             }
         }
 
+        logger.debug("Lecture ${lecture.id} has ${lecture.numAvailable} seats available")
         if (lecture.numAvailable <= 0) {
             throw errorHelper.badRequest(
                 "Student couldn't register the lecture: no available seats"
             )
         }
         lecture.numAvailable--
+        logger.debug("The remaining seats of the lecture ${lecture.id} is ${lecture.numAvailable}")
 
         val registration = LectureRegistration(
             student = student,
