@@ -3,22 +3,23 @@ package me.woodyn.myklas.service.register
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import me.woodyn.myklas.helper.aLecture
-import me.woodyn.myklas.helper.aStudent
-import me.woodyn.myklas.helper.withRegistration
+import me.woodyn.myklas.helper.aLectureRegistration
 import org.junit.jupiter.api.Test
 
-internal class NoSameSubjectRegisterConstraintTest {
+internal class NoSameSubjectCheckerTest {
 
     @Test
     fun `Comply when no lectures conflict`() {
-        val student = aStudent()
-            .withRegistration(
+        val registrations = listOf(
+            aLectureRegistration(
                 lecture = aLecture(term = "2021-1", subject = "java programming")
             )
+        )
 
-        val constraint = NoSameSubjectRegisterConstraint()
-        val result = constraint.comply(
-            student, aLecture(
+        val checker = NoSameSubjectChecker()
+        val result = checker.check(
+            registrations,
+            aLecture(
                 term = "2021-1",
                 subject = "algorithm"
             )
@@ -29,14 +30,16 @@ internal class NoSameSubjectRegisterConstraintTest {
 
     @Test
     fun `Doesn't comply when some lectures conflict each other`() {
-        val student = aStudent()
-            .withRegistration(
+        val registrations = listOf(
+            aLectureRegistration(
                 lecture = aLecture(term = "2021-1", subject = "algorithm")
             )
+        )
 
-        val constraint = NoSameSubjectRegisterConstraint()
-        val result = constraint.comply(
-            student, aLecture(
+        val checker = NoSameSubjectChecker()
+        val result = checker.check(
+            registrations,
+            aLecture(
                 term = "2021-1",
                 subject = "algorithm"
             )

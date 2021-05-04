@@ -21,11 +21,10 @@ interface LectureRegistrationRepository : JpaRepository<LectureRegistration, Lon
 
     @Query(
         "select reg from LectureRegistration reg inner join reg.lecture lec " +
-                "where reg.student = ?1 and lec.subject = ?2 and lec.term <> ?3"
+                "where reg.student = ?1 and lec.term <> ?2"
     )
-    fun findOldRegistrationsBySubject(
+    fun findOldRegistrations(
         student: Student,
-        lectureSubject: String,
         term: String
     ): Set<LectureRegistration>
 
