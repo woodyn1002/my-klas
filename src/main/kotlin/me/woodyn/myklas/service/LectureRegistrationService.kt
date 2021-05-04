@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Service
 class LectureRegistrationService(
@@ -22,9 +20,6 @@ class LectureRegistrationService(
     private val registrationRepository: LectureRegistrationRepository,
     private val studentRepository: StudentRepository,
     private val lectureRepository: LectureRepository,
-
-    @PersistenceContext
-    private val entityManager: EntityManager,
 
     @Autowired(required = false)
     @Qualifier("basic")
@@ -42,7 +37,7 @@ class LectureRegistrationService(
         val student = studentRepository.findByIdForUpdate(studentId).orElseThrow {
             errorHelper.notFound("Student $studentId")
         }
-        val lecture = lectureRepository.findById(dto.lectureId).orElseThrow {
+        val lecture = lectureRepository.findByIdForUpdate(dto.lectureId).orElseThrow {
             errorHelper.notFound("Lecture ${dto.lectureId}")
         }
 
@@ -55,23 +50,18 @@ class LectureRegistrationService(
             }
         }
 
-        entityManager.detach(lecture)
-        val lectureForUpdate = lectureRepository.findByIdForUpdate(dto.lectureId).orElseThrow {
-            errorHelper.notFound("Lecture ${dto.lectureId}")
-        }
-
-        logger.debug("Lecture ${lectureForUpdate.id} has ${lectureForUpdate.numAvailable} seats available")
-        if (lectureForUpdate.numAvailable <= 0) {
+        logger.debug("Lecture ${lecture.id} has ${lecture.numAvailable} seats available")
+        if (lecture.numAvailable <= 0) {
             throw errorHelper.badRequest(
                 "Student couldn't register the lecture: no available seats"
             )
         }
-        lectureForUpdate.numAvailable--
-        logger.debug("The remaining seats of the lecture ${lectureForUpdate.id} is ${lectureForUpdate.numAvailable}")
+        lecture.numAvailable--
+        logger.debug("The remaining seats of the lecture ${lecture.id} is ${lecture.numAvailable}")
 
         val registration = LectureRegistration(
             student = student,
-            lecture = lectureForUpdate
+            lecture = lecture
         )
         registrationRepository.save(registration)
 
