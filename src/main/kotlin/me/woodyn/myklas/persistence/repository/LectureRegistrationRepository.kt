@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 interface LectureRegistrationRepository : JpaRepository<LectureRegistration, Long> {
 
     @Query(
-        "select reg from LectureRegistration reg inner join reg.lecture lec " +
+        "select reg from LectureRegistration reg " +
+                "inner join fetch reg.lecture lec " +
+                "left join fetch lec.schedules " +
                 "where reg.student = ?1 and lec.term = ?2"
     )
     fun findRegistrationsBelongToTerm(

@@ -21,7 +21,7 @@ class Lecture(
     var capacity: Int,
     var numAvailable: Int
 ) {
-    @OneToMany(mappedBy = "lecture", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "lecture", cascade = [CascadeType.ALL])
     val schedules: MutableSet<Schedule> = mutableSetOf()
 
     @OneToMany(mappedBy = "lecture", cascade = [CascadeType.REMOVE])
