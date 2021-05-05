@@ -3,6 +3,7 @@ package me.woodyn.myklas.persistence.model
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(name = "term", columnList = "subject,term")])
 class Lecture(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

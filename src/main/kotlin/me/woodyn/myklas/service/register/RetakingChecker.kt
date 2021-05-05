@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component
 class RetakingChecker(
     @Value("\${domain.constraints.max-grade-for-retaking}")
     private val maxGrade: Grade
-) : HistoryConstraint.Checker {
+) : RetakingConstraint.Checker {
 
-    override fun check(registrations: Collection<LectureRegistration>, lecture: Lecture): Boolean {
-        val sameSubjectRegistrations =
-            registrations.filter { it.lecture.subject == lecture.subject }
-
+    override fun check(
+        sameSubjectRegistrations: Collection<LectureRegistration>,
+        lecture: Lecture
+    ): Boolean {
         if (sameSubjectRegistrations.isNotEmpty()) {
             if (sameSubjectRegistrations.size > 1) {
                 return false

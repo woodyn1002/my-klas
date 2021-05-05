@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Qualifier("basic")
-class HistoryConstraint(
+class RetakingConstraint(
     private val registrationRepository: LectureRegistrationRepository,
 
     @Autowired(required = false)
@@ -20,8 +20,9 @@ class HistoryConstraint(
 
     @Transactional(readOnly = true)
     override fun comply(student: Student, lecture: Lecture): Boolean {
-        val registrations = registrationRepository.findOldRegistrations(
+        val registrations = registrationRepository.findOldRegistrationsBySubject(
             student = student,
+            subject = lecture.subject,
             term = lecture.term
         )
         return checkers.all { it.check(registrations, lecture) }
@@ -29,7 +30,10 @@ class HistoryConstraint(
 
     interface Checker {
 
-        fun check(registrations: Collection<LectureRegistration>, lecture: Lecture): Boolean
+        fun check(
+            sameSubjectRegistrations: Collection<LectureRegistration>,
+            lecture: Lecture
+        ): Boolean
 
     }
 
