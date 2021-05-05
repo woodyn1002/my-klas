@@ -11,7 +11,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 75
+      maximum-pool-size: 40
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: true
